@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     public UsersMapper usersMapper;
-    public static final String USER_FACE = "http://192.145.1.1/abc.jpg";
+    private static final String USER_FACE = "http://192.145.1.1/abc.jpg";
     @Autowired
     private Sid sid;
 
@@ -34,9 +34,8 @@ public class UserServiceImpl implements UserService {
 
         Users result = usersMapper.selectOneByExample(userExaple);
 
-        return result == null ? false : true;
+        return result != null;
     }
-
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -63,5 +62,16 @@ public class UserServiceImpl implements UserService {
 
         usersMapper.insert(user);
         return user;
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public Users queryUserForLogin(String username, String password) {
+        Example userExample = new Example(Users.class);
+        Example.Criteria userCriteria = userExample.createCriteria();
+        userCriteria.andEqualTo("username", username);
+        userCriteria.andEqualTo("password", password);
+
+        return usersMapper.selectOneByExample(userExample);
     }
 }
