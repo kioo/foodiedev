@@ -4,7 +4,9 @@ import com.imooc.pojo.Users;
 import com.imooc.pojo.bo.UserBO;
 import com.imooc.service.StuService;
 import com.imooc.service.UserService;
+import com.imooc.utils.CookieUtils;
 import com.imooc.utils.IMOOCJSONResult;
+import com.imooc.utils.JsonUtils;
 import com.imooc.utils.MD5Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
 
 @Api(value = "注册登录", tags = {"用于注册登录的相关接口"})
@@ -41,7 +45,9 @@ public class PassportController {
 
     @ApiOperation(value = "用户注册", notes = "用户注册", httpMethod = "POST")
     @PostMapping("/regist")
-    public IMOOCJSONResult regist(@RequestBody UserBO userBO) {
+    public IMOOCJSONResult regist(@RequestBody UserBO userBO,
+                                  HttpServletRequest request,
+                                  HttpServletResponse response) {
         String username = userBO.getUsername();
         String password = userBO.getPassword();
         String confirmPwd = userBO.getConfirmPassword();
@@ -63,14 +69,20 @@ public class PassportController {
             return IMOOCJSONResult.errorMsg("两次密码输入不一致");
         }
         // 4. 实现注册
-        userService.createUser(userBO);
+        Users userResult = userService.createUser(userBO);
+
+        userResult = setNullProperty(userResult);
+
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userResult), true);
 
         return IMOOCJSONResult.ok();
     }
 
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
     @PostMapping("/login")
-    public IMOOCJSONResult login(@RequestBody UserBO userBO) throws Exception {
+    public IMOOCJSONResult login(@RequestBody UserBO userBO,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response) throws Exception {
         String username = userBO.getUsername();
         String password = userBO.getPassword();
         // 0. 判空，用户名和密码
@@ -82,8 +94,27 @@ public class PassportController {
         if (userResult == null){
             return IMOOCJSONResult.errorMsg("用户名或密码不正确");
         }
+
+        userResult = setNullProperty(userResult);
+
+        CookieUtils.setCookie(request, response, "user", JsonUtils.objectToJson(userResult), true);
+
         return IMOOCJSONResult.ok(userResult);
     }
 
+
+    /**
+     * 脱敏数据(Remove sensitive data)
+     */
+    private Users setNullProperty(Users userResult){
+        userResult.setPassword(null);
+        userResult.setMobile(null);
+        userResult.setEmail(null);
+        userResult.setCreatedTime(null);
+        userResult.setUpdatedTime(null);
+        userResult.setBirthday(null);
+
+        return userResult;
+    }
 
 }
