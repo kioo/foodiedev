@@ -11,6 +11,8 @@ import com.imooc.utils.MD5Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.HttpStatus;
@@ -25,12 +27,17 @@ import javax.swing.*;
 @RequestMapping("passport")
 public class PassportController {
 
+    final static Logger logger = LoggerFactory.getLogger(PassportController.class);
+
     @Autowired
     public UserService userService;
 
     @ApiOperation(value = "用户名是否存在", notes = "用户名是否存在", httpMethod = "GET")
     @GetMapping("/usernameIsExist")
     public IMOOCJSONResult usernameIsExist(@RequestParam String username) {
+
+        logger.info("info: start usernameIsExist");
+
         // 1. 判断用户名不能为空
         if (StringUtils.isBlank(username)) {
             return IMOOCJSONResult.errorMsg("用户名不能为空");
