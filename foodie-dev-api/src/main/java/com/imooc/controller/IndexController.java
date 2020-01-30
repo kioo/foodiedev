@@ -6,6 +6,7 @@ import com.imooc.pojo.Category;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.bo.UserBO;
 import com.imooc.pojo.vo.CategoryVO;
+import com.imooc.pojo.vo.NewItemsVO;
 import com.imooc.service.CarouselService;
 import com.imooc.service.CategoryService;
 import com.imooc.service.UserService;
@@ -69,10 +70,25 @@ public class IndexController {
             @PathVariable Integer rootCatId){
 
         if(rootCatId == null){
-            return IMOOCJSONResult.errorMsg("");
+            return IMOOCJSONResult.errorMsg("分类不存在");
         }
 
         List<CategoryVO> list = categoryService.getSubCatList(rootCatId);
+
+        return IMOOCJSONResult.ok(list);
+    }
+
+    @ApiOperation(value = "查询每个一级分类的最新六条商品数据", notes = "查询每个一级分类的最新六条商品数据", httpMethod = "GET")
+    @GetMapping("/sixNewItems/{rootCatId}")
+    public IMOOCJSONResult sixNewItems(
+            @ApiParam(name = "rootCatId", value = "一级分类id")
+            @PathVariable Integer rootCatId){
+
+        if(rootCatId == null){
+            return IMOOCJSONResult.errorMsg("分类不存在");
+        }
+
+        List<NewItemsVO> list = categoryService.getSixNewItemsLazy(rootCatId);
 
         return IMOOCJSONResult.ok(list);
     }
