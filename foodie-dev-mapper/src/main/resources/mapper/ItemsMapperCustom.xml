@@ -4,17 +4,17 @@
 
     <select id="queryItemComments" parameterType="Map" resultType="com.imooc.pojo.vo.ItemCommentVO">
         SELECT
-            ic.comment_level as commentLevel,
-            ic.content as content,
-            ic.sepc_name as specName,
-            ic.created_time as createdTime,
-            u.face as userFace,
-            u.nickname as nickname
+        ic.comment_level as commentLevel,
+        ic.content as content,
+        ic.sepc_name as specName,
+        ic.created_time as createdTime,
+        u.face as userFace,
+        u.nickname as nickname
         FROM
-          items_comments ic
+        items_comments ic
         LEFT JOIN users u ON ic.user_id = u.id
         WHERE
-          ic.item_id = #{paramsMap.itemId}
+        ic.item_id = #{paramsMap.itemId}
         <if test="paramsMap.level != null and paramsMap.level != '' ">
             AND ic.comment_level = 1
         </if>
@@ -22,52 +22,52 @@
 
     <select id="searchItems" parameterType="Map" resultType="com.imooc.pojo.vo.SearchItemsVO">
         SELECT
-            i.id AS itemId,
-            i.item_name AS itemName,
-            i.sell_counts AS sellCounts,
-            ii.url AS imgUrl,
-            tempSpec.price_discount as price
+        i.id AS itemId,
+        i.item_name AS itemName,
+        i.sell_counts AS sellCounts,
+        ii.url AS imgUrl,
+        tempSpec.price_discount as price
         FROM
-            items i
+        items i
         LEFT JOIN
-          items_img ii
+        items_img ii
         ON
-          i.id = ii.item_id
+        i.id = ii.item_id
         LEFT JOIN
-          (SELECT item_id, MIN(price_discount) as price_discount FROM items_spec GROUP BY item_id) tempSpec
+        (SELECT item_id, MIN(price_discount) as price_discount FROM items_spec GROUP BY item_id) tempSpec
         ON
-          i.id = tempSpec.item_id
+        i.id = tempSpec.item_id
         WHERE
-            ii.is_main = 1
-            <if test="paramsMap.keywords != null and paramsMap.keywords != '' ">
-                AND i.item_name like '%${paramsMap.keywords}%'
-            </if>
-            ORDER BY
-            <choose>
-                <when test = "paramsMap.sort == &quot;c&quot; ">
-                    i.sell_counts desc
-                </when>
-                <when test = "paramsMap.sort == &quot;p&quot; ">
-                    tempSpec.price_discount asc
-                </when>
-                <otherwise>
-                    i.item_name asc
-                </otherwise>
-            </choose>
+        ii.is_main = 1
+        <if test="paramsMap.keywords != null and paramsMap.keywords != '' ">
+            AND i.item_name like '%${paramsMap.keywords}%'
+        </if>
+        ORDER BY
+        <choose>
+            <when test="paramsMap.sort == &quot;c&quot; ">
+                i.sell_counts desc
+            </when>
+            <when test="paramsMap.sort == &quot;p&quot; ">
+                tempSpec.price_discount asc
+            </when>
+            <otherwise>
+                i.item_name asc
+            </otherwise>
+        </choose>
     </select>
     <!-- k 默认排序 根据name; c 根据销量排序  ; p 根据价格排序-->
 
     <select id="searchItemsByThirdCat" parameterType="Map" resultType="com.imooc.pojo.vo.SearchItemsVO">
         SELECT
-            i.id AS itemId,
-            i.item_name AS itemName,
-            i.sell_counts AS sellCounts,
-            ii.url AS imgUrl,
-            tempSpec.price_discount as price
+        i.id AS itemId,
+        i.item_name AS itemName,
+        i.sell_counts AS sellCounts,
+        ii.url AS imgUrl,
+        tempSpec.price_discount as price
         FROM
-          items i
+        items i
         LEFT JOIN
-          items_img ii
+        items_img ii
         ON
         i.id = ii.item_id
         LEFT JOIN
@@ -83,15 +83,44 @@
         </if>
         ORDER BY
         <choose>
-            <when test = "paramsMap.sort == &quot;c&quot; ">
+            <when test="paramsMap.sort == &quot;c&quot; ">
                 i.sell_counts desc
             </when>
-            <when test = "paramsMap.sort == &quot;p&quot; ">
+            <when test="paramsMap.sort == &quot;p&quot; ">
                 tempSpec.price_discount asc
             </when>
             <otherwise>
                 i.item_name asc
             </otherwise>
         </choose>
+    </select>
+
+    <select id="queryItemsBySpecIds" parameterType="List" resultType="com.imooc.pojo.vo.ShopcartVO">
+        SELECT
+            t_items.id as itemId,
+            t_items.item_name as itemName,
+            t_items_img.url as itemImgUrl,
+            t_items_spec.id as specId,
+            t_items_spec.`name` as specName,
+            t_items_spec.price_discount as priceDiscount,
+            t_items_spec.price_normal as priceNormal
+        FROM
+        items_spec t_items_spec
+        LEFT JOIN
+        items t_items
+        ON
+        t_items.id = t_items_spec.item_id
+        LEFT JOIN
+        items_img t_items_img
+        ON
+        t_items_img.item_id = t_items.id
+        WHERE
+        t_items_img.is_main = 1
+        AND
+        t_items_spec.id IN
+        <foreach collection="paramsList" index="index" item="specId" open="(" separator="," close=")">
+            #{specId}
+        </foreach>
+
     </select>
 </mapper>
