@@ -1,0 +1,6 @@
+
+.idea/*
+*.iml
+*.class
+foodie*/target/*
+imooc.log*
