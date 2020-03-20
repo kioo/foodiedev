@@ -20,10 +20,10 @@ spring:
     #driver-class-name: com.mysql.jdbc.Driver          # mysql驱动
     driver-class-name: org.mariadb.jdbc.Driver
     #url: jdbc:mysql://192.168.43.105:3306/foodie?characterEncoding=UTF-8&useSSL=false&useUnicode=true&serverTimezone=UTC
-    url: jdbc:mariadb://192.168.43.109:3307/foodie
+    url: jdbc:mariadb://192.168.0.110:3307/foodie
     username: root
     # password: MyNewPass4!  #mysql
-    password: .S&Zd1$OO,  #mariaDB
+    password: \:evj2%:Ez #mariaDB
     hikari:
       connection-timeout: 30000       # 等待连接池分配连接的最大时长（毫秒），超过这个时长还没可用的连接则发生SQLException， 默认:30秒
       minimum-idle: 5                 # 最小连接数
