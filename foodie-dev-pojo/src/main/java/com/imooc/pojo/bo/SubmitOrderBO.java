@@ -8,7 +8,7 @@ public class SubmitOrderBO {
     private String userId;
     private String itemSpecIds;
     private String addressId;
-    private String payMethod;
+    private Integer payMethod;
     private String leftMsg;
 
     public String getUserId() {
@@ -35,11 +35,11 @@ public class SubmitOrderBO {
         this.addressId = addressId;
     }
 
-    public String getPayMethod() {
+    public Integer getPayMethod() {
         return payMethod;
     }
 
-    public void setPayMethod(String payMethod) {
+    public void setPayMethod(Integer payMethod) {
         this.payMethod = payMethod;
     }
 
@@ -51,13 +51,14 @@ public class SubmitOrderBO {
         this.leftMsg = leftMsg;
     }
 
+
     @Override
     public String toString() {
         return "SubmitOrderBO{" +
                 "userId='" + userId + '\'' +
                 ", itemSpecIds='" + itemSpecIds + '\'' +
                 ", addressId='" + addressId + '\'' +
-                ", payMethod='" + payMethod + '\'' +
+                ", payMethod=" + payMethod +
                 ", leftMsg='" + leftMsg + '\'' +
                 '}';
     }
