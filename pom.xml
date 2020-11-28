@@ -8,6 +8,8 @@
     <artifactId>foodie-dev</artifactId>
 
     <version>1.0-SNAPSHOT</version>
+
+    <!--模块之间是平等的 api -> service -> mapper -> pojo -> common -->
     <modules>
         <module>foodie-dev-api</module>
         <module>foodie-dev-common</module>
@@ -18,6 +20,7 @@
 
     <packaging>pom</packaging>
 
+    <!-- spring boot 顶级依赖 -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -35,7 +38,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
+            <exclusions> <!-- 排除自带的 log 包 -->
                   <exclusion>
                       <groupId>org.springframework.boot</groupId>
                       <artifactId>spring-boot-starter-logging</artifactId>
@@ -50,6 +53,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
+        <!-- 获取配置文件的能力的包-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>

@@ -40,6 +40,17 @@ public class IndexController {
     @Autowired
     public CategoryService categoryService;
 
+
+    @ApiOperation(value = "获取首页轮播图列表", notes = "获取首页轮播图列表", httpMethod = "GET")
+    @GetMapping("/testAutoIt3")
+    public String testAutoIt3(){
+
+        String retrunString = "U2FsdGVkX1+jn1qvf24K7QmBp6WpWvyGr8U0Y4V+2qA=";
+
+        return retrunString;
+    }
+
+
     @ApiOperation(value = "获取首页轮播图列表", notes = "获取首页轮播图列表", httpMethod = "GET")
     @GetMapping("/carousel")
     public IMOOCJSONResult carousel(){
